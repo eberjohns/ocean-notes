@@ -91,3 +91,4 @@ export function renderHome(): HTMLElement {
 
   return page;
 }
+

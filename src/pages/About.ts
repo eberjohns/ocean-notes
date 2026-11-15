@@ -7,7 +7,7 @@ export function renderAbout(): HTMLElement {
       <span class="text-muted" style="text-transform: uppercase; letter-spacing: 0.05em; font-size: var(--t-small); font-weight: 600;">
         About & Scientific Provenance
       </span>
-      <h1 class="page-title">The Earth Information Jukebox</h1>
+      <h1 class="page-title">Ocean Notes</h1>
       <p class="page-lead">
         A static web application developed for the NASA Space Apps Challenge 2026, translating NASA ocean satellite datasets into an evolving orchestral experience you can see, hear, and analytically audit.
       </p>
@@ -66,7 +66,7 @@ export function renderAbout(): HTMLElement {
       <section style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-6);" aria-labelledby="a11y-title">
         <h2 id="a11y-title" style="font-size: var(--t-h2); margin-bottom: var(--space-3);">Accessibility Statement</h2>
         <p class="text-muted" style="line-height: var(--lh-body); margin-bottom: var(--space-3);">
-          The Earth Information Jukebox is engineered to conform strictly to <strong>WCAG 2.2 Level AA</strong>:
+          Ocean Notes is engineered to conform strictly to <strong>WCAG 2.2 Level AA</strong>:
         </p>
         <ul style="list-style-position: inside; color: var(--text-muted); line-height: 1.8;">
           <li><strong>Non-Visual Path:</strong> All 64 acoustic grid cells are fully navigable via standard keyboard controls with ARIA grid roles and polite live regions announcing exact coordinates and velocities.</li>
@@ -80,3 +80,4 @@ export function renderAbout(): HTMLElement {
 
   return page;
 }
+

@@ -40,7 +40,7 @@ function initApp(): void {
   router.init();
 
   console.log(
-    '%c Earth Information Jukebox %c Initialized Step 1: Foundations ',
+    '%c Ocean Notes %c Initialized Step 1: Foundations ',
     'background: #103C4A; color: #6BE1D0; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
     'background: #06131F; color: #E7F1ED; padding: 4px 8px; border-radius: 0 4px 4px 0;'
   );
@@ -52,3 +52,4 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+

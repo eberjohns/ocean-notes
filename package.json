@@ -1,12 +1,12 @@
 {
-  "name": "earth-jukebox",
+  "name": "ocean-notes",
   "version": "1.0.0",
-  "description": "The Earth Information Jukebox - NASA Space Apps Challenge 2026",
+  "description": "Ocean Notes - NASA Space Apps Challenge 2026",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "node scripts/contrast.mjs && tsc && vite build",
-    "test": "node scripts/contrast.mjs && node scripts/test-foundation.mjs",
+    "test": "node scripts/contrast.mjs && node scripts/test-foundation.mjs && node scripts/test-data-step2.mjs",
     "preview": "vite preview",
     "check:contrast": "node scripts/contrast.mjs"
   },

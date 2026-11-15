@@ -23,3 +23,10 @@ This log records technical, design, and structural decisions made during impleme
 - **Date**: 2026-11-15
 - **Choice**: Standard CSS custom properties scoped to `:root` (Public Dark theme) and `[data-theme="research"]` (Research Light theme). Contrast verification automated via `scripts/contrast.mjs` checking both themes against WCAG 2.2 AA (4.5:1 text, 3:1 UI).
 - **Impact**: All text and UI components guaranteed compliant before build.
+
+## Decision 5: Official Project Naming
+- **Date**: 2026-11-15
+- **Choice**: Project officially branded as "Ocean Notes".
+- **Rationale**: User directive prior to Step 2 implementation. All UI titles, headers, footers, meta descriptions, and documentation updated consistently to reflect "Ocean Notes".
+
+

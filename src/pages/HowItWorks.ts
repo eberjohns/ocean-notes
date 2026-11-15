@@ -123,3 +123,4 @@ export function renderHowItWorks(): HTMLElement {
 
   return page;
 }
+

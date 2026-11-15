@@ -27,6 +27,24 @@ global.document = dom.window.document;
 global.localStorage = dom.window.localStorage;
 global.HTMLElement = dom.window.HTMLElement;
 
+// Mock fetch for local static assets in JSDOM
+global.window.fetch = async (url) => {
+  const cleanUrl = url.replace(/^\//, '');
+  const localPath = path.join('public', cleanUrl);
+  if (fs.existsSync(localPath)) {
+    const content = fs.readFileSync(localPath, 'utf-8');
+    return {
+      ok: true,
+      status: 200,
+      json: async () => JSON.parse(content),
+      text: async () => content,
+      arrayBuffer: async () => fs.readFileSync(localPath).buffer
+    };
+  }
+  return { ok: false, status: 404, statusText: 'Not Found' };
+};
+global.fetch = global.window.fetch;
+
 // Dynamic import of application modules
 const { store } = await import('../src/state.ts');
 const { createHeader } = await import('../src/components/Header.ts');
@@ -83,7 +101,7 @@ try {
   router.init();
 
   // Test Home route
-  assert(document.title.includes('Earth Information Jukebox'), 'Home title set correctly');
+  assert(document.title.includes('Ocean Notes'), 'Home title set correctly');
   assert(document.documentElement.getAttribute('data-theme') === 'public', 'Home uses public dark theme');
   assert(document.querySelector('h1')?.textContent.includes('Hear the ocean move'), 'Home headline rendered');
 
@@ -106,13 +124,16 @@ try {
   assert(document.title.includes('Research Lab'), 'Research Lab title updated');
   assert(document.documentElement.getAttribute('data-theme') === 'research', 'Lab automatically switches to research light theme');
   
+  // Await asynchronous data load and UI initialization
+  await new Promise(r => setTimeout(r, 50));
+  
   // Verify Mockup Fix #1 (Real coordinates, no illustrative label)
   assert(!document.body.innerHTML.includes('(ILLUSTRATIVE)'), 'Mockup Fix #1: "(ILLUSTRATIVE)" label removed');
-  assert(document.body.innerHTML.includes('-1.125° N'), 'Mockup Fix #1: Real center latitude displayed');
-  assert(document.body.innerHTML.includes('77.000° E'), 'Mockup Fix #1: Real center longitude displayed');
+  assert(document.body.innerHTML.includes('-1.125°N'), 'Mockup Fix #1: Real center latitude displayed');
+  assert(document.body.innerHTML.includes('77.000°E'), 'Mockup Fix #1: Real center longitude displayed');
 
   // Verify Mockup Fix #2 (8, 12, 16 sectors, not 8x8)
-  const sectorSelect = document.getElementById('select-sectors');
+  const sectorSelect = document.getElementById('lab-sectors-select');
   assert(sectorSelect !== null, 'Sector select exists');
   assert(sectorSelect?.innerHTML.includes('16 Sectors'), 'Mockup Fix #2: 16 sectors option present');
 

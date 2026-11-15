@@ -14,23 +14,23 @@ interface RouteDefinition {
 
 const routes: Record<string, RouteDefinition> = {
   '/': {
-    title: 'Earth Information Jukebox | Hear the Ocean Move',
+    title: 'Ocean Notes | Hear the Ocean Move',
     render: renderHome
   },
   '/explore': {
-    title: 'Regional Explorer | Earth Information Jukebox',
+    title: 'Regional Explorer | Ocean Notes',
     render: renderExplorer
   },
   '/how-it-works': {
-    title: 'How It Works | Earth Information Jukebox',
+    title: 'How It Works | Ocean Notes',
     render: renderHowItWorks
   },
   '/lab': {
-    title: 'Research Lab | Earth Information Jukebox',
+    title: 'Research Lab | Ocean Notes',
     render: renderLab
   },
   '/about': {
-    title: 'About & Provenance | Earth Information Jukebox',
+    title: 'About & Provenance | Ocean Notes',
     render: renderAbout
   }
 };

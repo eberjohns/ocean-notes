@@ -11,3 +11,4 @@ According to **Non-Negotiable Rule 1** and **Locked Decisions**:
 3. `ibm-plex-mono-latin.woff2` (Weights: 500)
 
 Status: **Pending Asset Acquisition** (identified during initial inspection).
+

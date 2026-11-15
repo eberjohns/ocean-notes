@@ -132,3 +132,4 @@ if (failed > 0) {
   console.log('\nAll color tokens meet WCAG 2.2 AA requirements.\n');
   process.exit(0);
 }
+

@@ -12,7 +12,7 @@ export function createFooter(): HTMLElement {
 
       <div class="footer-bottom">
         <div>
-          <span>Earth Information Jukebox · NASA Space Apps Challenge 2026</span>
+          <span>Ocean Notes · NASA Space Apps Challenge 2026</span>
         </div>
         <div style="display: flex; gap: var(--space-4);">
           <a href="#/how-it-works">How It Works</a>
@@ -25,3 +25,4 @@ export function createFooter(): HTMLElement {
 
   return footer;
 }
+
