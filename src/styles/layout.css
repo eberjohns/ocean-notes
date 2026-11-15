@@ -1,0 +1,299 @@
+/* ==========================================================================
+   Layout & Shared Structural Components
+   ========================================================================== */
+
+/* Main Layout Shell */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--header-height);
+  background-color: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.header-inner {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-h3);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: var(--space-1);
+}
+
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--t-small);
+  font-weight: 500;
+  transition: color var(--dur-fast), background-color var(--dur-fast);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--text);
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* Header Actions: Mode Pill + Sound Controls */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Public / Research Mode Pill (Mockup Fix #8: Pair of direct links) */
+.mode-pill {
+  display: inline-flex;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+}
+
+.mode-pill-link {
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  min-height: 36px;
+  transition: all var(--dur-fast);
+}
+
+.mode-pill-link:hover {
+  color: var(--text);
+}
+
+.mode-pill-link[aria-current="page"] {
+  background-color: var(--accent);
+  color: #06131F;
+  font-weight: 600;
+}
+
+[data-theme="research"] .mode-pill-link[aria-current="page"] {
+  background-color: var(--accent);
+  color: #FFFFFF;
+}
+
+/* Audio Controls in Header */
+.audio-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-3);
+  color: var(--text);
+  font-size: var(--t-small);
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.audio-toggle-btn:hover {
+  border-color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.audio-toggle-btn.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--glow);
+}
+
+/* Sound Opt-in Banner (Spec 6.2 & Non-Negotiable Rule 2) */
+.sound-banner {
+  background-color: var(--surface-solid);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  font-size: var(--t-small);
+  z-index: 999;
+}
+
+.sound-banner-text {
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sound-banner-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--dur-fast) var(--ease-standard);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #06131F;
+}
+
+[data-theme="research"] .btn-primary {
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
+}
+
+/* Main Content Area */
+#main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--gutter);
+}
+
+.page-hero {
+  margin-bottom: var(--space-8);
+}
+
+.page-title {
+  font-size: var(--t-h1);
+  margin-bottom: var(--space-3);
+}
+
+.page-lead {
+  font-size: var(--t-body);
+  color: var(--text-muted);
+  max-width: 720px;
+  line-height: var(--lh-body);
+}
+
+/* Site Footer */
+.site-footer {
+  margin-top: auto;
+  background-color: var(--surface-solid);
+  border-top: 1px solid var(--border);
+  padding: var(--space-8) var(--gutter);
+  font-size: var(--t-small);
+  color: var(--text-muted);
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.footer-citations {
+  line-height: 1.6;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-4);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--space-2) var(--gutter);
+  }
+
+  .site-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+  }
+
+  .sound-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+}

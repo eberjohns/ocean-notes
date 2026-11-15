@@ -1,0 +1,34 @@
+{
+  "name": "earth-jukebox",
+  "version": "1.0.0",
+  "description": "The Earth Information Jukebox - NASA Space Apps Challenge 2026",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/contrast.mjs && tsc && vite build",
+    "test": "node scripts/contrast.mjs && node scripts/test-foundation.mjs",
+    "preview": "vite preview",
+    "check:contrast": "node scripts/contrast.mjs"
+  },
+  "keywords": [
+    "nasa",
+    "space-apps",
+    "ocean-currents",
+    "sonification",
+    "threejs",
+    "web-audio"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^26.6.6",
+    "@types/three": "0.187.0",
+    "jsdom": "^31.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "three": "0.187.0"
+  }
+}
