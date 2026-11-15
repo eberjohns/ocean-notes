@@ -236,3 +236,4 @@ export async function loadMetadata(metaUrl: string = '/data/meta.json'): Promise
   if (!res.ok) throw new Error(`Failed to load ${metaUrl}: HTTP ${res.status}`);
   return res.json();
 }
+

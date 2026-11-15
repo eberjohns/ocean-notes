@@ -30,3 +30,17 @@ This log records technical, design, and structural decisions made during impleme
 - **Rationale**: User directive prior to Step 2 implementation. All UI titles, headers, footers, meta descriptions, and documentation updated consistently to reflect "Ocean Notes".
 
 
+## Decision 6: Derived Cell Speed Metric
+- **Date**: 2026-11-15
+- **Choice**: For all sonification and 8×8 readouts, cell speed represents the mean of point speeds $\frac{1}{N}\sum \sqrt{u_i^2+v_i^2}$ rather than vector mean speed $\sqrt{\bar{u}^2+\bar{v}^2}$.
+- **Rationale**: Vector averaging cancels opposing flow in shear zones and understates kinetic energy. Directional coherence is explicitly tracked as $|\vec{V}_{mean}| / \bar{S}_{point}$.
+
+## Decision 7: Shaded Relief & Normal Map Asset Pipeline
+- **Date**: 2026-11-15
+- **Choice**: The raw 11.5 MB height PNG and 14.2 MB normal PNG are kept in `/data` and never shipped to client. Generated `relief-2048.webp` (79 KB), `height-1024.png` (223 KB), `normal-1024.webp` (285 KB), and `coast.json` (8.5 KB) via `scripts/build-relief.py`.
+- **Rationale**: Strict compliance with <250 KB color texture, <800 KB height texture, and <1 MB normal texture limits. Coastlines derive directly from the 0 m elevation contour without third-party coastline files.
+
+## Decision 8: WebGL Fallback and Keyboard Grid Decoupling
+- **Date**: 2026-11-15
+- **Choice**: The 64-cell accessible keyboard navigation grid is rendered into the DOM independently of the Three.js WebGL canvas.
+- **Rationale**: Guarantees that users without WebGL or in assistive tech environments retain full keyboard navigation and screen reader parity, while modern GPUs get the 3D lit bathymetry relief surface.
