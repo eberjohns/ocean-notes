@@ -1,0 +1,162 @@
+{
+  "number_of_files": 31,
+  "missing_dates": [],
+  "output_file": "indian_ocean_october_2026.json",
+  "daily_coverage": [
+    {
+      "date": "2026-10-01",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-02",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-03",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-04",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-05",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-06",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-07",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-08",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-09",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-10",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-11",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-12",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-13",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-14",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-15",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-16",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-17",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-18",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-19",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-20",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-21",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-22",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-23",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-24",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-25",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-26",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-27",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-28",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-29",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-30",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    },
+    {
+      "date": "2026-10-31",
+      "valid_original_grid_points": 9641,
+      "total_original_grid_points": 9801
+    }
+  ]
+}

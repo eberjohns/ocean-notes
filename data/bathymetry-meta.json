@@ -1,0 +1,31 @@
+{
+  "source": "gebco_2026_n10.0_s-10.0_w60.0_e90.0.nc",
+  "variable": "elevation",
+  "units": "metres",
+  "dimensions": {
+    "latitude": 4800,
+    "longitude": 7200
+  },
+  "bounds": {
+    "north": 9.99791666666667,
+    "south": -9.997916666666669,
+    "west": 60.00208333333333,
+    "east": 89.99791666666664
+  },
+  "elevation_range_m": {
+    "minimum": -6319.0,
+    "maximum": 2475.0
+  },
+  "height_encoding": {
+    "minimum": -6319.0,
+    "maximum": 2475.0,
+    "formula": "elevation = minimum + (pixel / 65535) * (maximum - minimum)"
+  },
+  "visual_dimensions": {
+    "width": 3600,
+    "height": 2400
+  },
+  "normal_map_vertical_exaggeration": 8.0,
+  "numerical_data": "bathymetry-elevation.f32",
+  "numerical_dtype": "float32 little-endian"
+}
