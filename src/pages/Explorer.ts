@@ -1,5 +1,7 @@
 import { ReliefMap } from '../components/visualizer/ReliefMap.ts';
 import { loadGrid8, type Grid8Dataset } from '../data/loader.ts';
+import { audioEngine } from '../audio/engine.ts';
+import { store } from '../state.ts';
 
 export function renderExplorer(): HTMLElement {
   const page = document.createElement('div');
@@ -21,7 +23,7 @@ export function renderExplorer(): HTMLElement {
         <h1 class="explorer-hero-title">Indian Ocean</h1>
         <div class="explorer-hero-subhead">10° S &ndash; 10° N &middot; 60° E &ndash; 90° E</div>
         <p class="explorer-hero-desc">
-          Surface currents shape the music &mdash; faster flows add energy, shifts change the tone, and seasonal patterns build the composition.
+          Surface currents shape the music &mdash; faster flows add energy, shifts change the tone, and the month's changing currents build the composition.
         </p>
 
         <!-- Selected-Cell Readout Card (Glassmorphism Telemetry) -->
@@ -246,6 +248,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
             reliefMap.selectCell(r, c);
           }
           updateUI();
+          playSelectedCellSound(r, c);
         });
         btn.addEventListener('keydown', (e: KeyboardEvent) => {
           handleGridKeydown(e, r, c);
@@ -268,6 +271,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
         selectedRow = row;
         selectedCol = col;
         updateUI();
+        playSelectedCellSound(row, col);
       }
     });
   } catch (err) {
@@ -445,19 +449,71 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
     }
   });
 
-  // Play button waveform animation toggle
+  function playSelectedCellSound(r: number, c: number): void {
+    if (audioEngine.isInitialized() && !audioEngine.isMuted()) {
+      const cell = dataset.days[currentDayIdx].cells.find(cell => cell.row === r && cell.column === c);
+      if (cell) {
+        audioEngine.playCell(cell, { date: dataset.days[currentDayIdx].date, voice: 'lead' });
+      }
+    }
+  }
+
+  // Play button audio transport
   const playBtn = page.querySelector<HTMLButtonElement>('#btn-transport-play');
   const waveBars = page.querySelectorAll<HTMLElement>('.wave-bar');
   let isPlaying = false;
-  playBtn?.addEventListener('click', () => {
-    isPlaying = !isPlaying;
-    playBtn.innerHTML = isPlaying
-      ? `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:0;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
-      : `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M8 5v14l11-7z"/></svg>`;
+
+  function updatePlayButtonUI(): void {
+    if (playBtn) {
+      playBtn.innerHTML = isPlaying
+        ? `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:0;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+        : `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M8 5v14l11-7z"/></svg>`;
+      playBtn.setAttribute('aria-label', isPlaying ? 'Pause ocean composition' : 'Play October 2026 Ocean Composition');
+    }
     waveBars.forEach((bar, idx) => {
       bar.classList.toggle('pulse', isPlaying);
       bar.style.animationDelay = `${(idx * 0.08).toFixed(2)}s`;
     });
+  }
+
+  playBtn?.addEventListener('click', async () => {
+    if (isPlaying) {
+      isPlaying = false;
+      audioEngine.stopAll(0.08);
+      updatePlayButtonUI();
+    } else {
+      try {
+        await audioEngine.init();
+        if (audioEngine.isMuted()) {
+          audioEngine.setMuted(false);
+          store.setSoundOptIn(true);
+        }
+        isPlaying = true;
+        updatePlayButtonUI();
+
+        const currentDay = dataset.days[currentDayIdx];
+        audioEngine.scheduleDay(currentDay, audioEngine.getCurrentTime(), {
+          onNoteStart: (note) => {
+            selectedRow = note.row;
+            selectedCol = note.col;
+            if (reliefMap) reliefMap.selectCell(note.row, note.col);
+            updateUI();
+          }
+        });
+      } catch (err) {
+        console.warn('Playback initialization error:', err);
+      }
+    }
+  });
+
+  // Trace sounding notes in the live caption
+  audioEngine.subscribeNote((note) => {
+    const captionText = page.querySelector('#caption-text');
+    if (captionText) {
+      const headingDesc = note.u >= 0 ? 'eastward' : 'westward';
+      const panDesc = note.pan < -0.2 ? 'left' : note.pan > 0.2 ? 'right' : 'center';
+      captionText.textContent = `${note.date}: Row ${note.rowUi}, Col ${note.colUi} (${note.pitchName}, ${note.frequency.toFixed(1)} Hz, pan ${panDesc}) - ${note.speed.toFixed(3)} m/s ${headingDesc} flow. Voice: ${note.voice}.`;
+    }
   });
 
   // Copy cell values handler

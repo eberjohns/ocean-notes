@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/contrast.mjs && tsc && vite build",
-    "test": "node scripts/contrast.mjs && node scripts/test-foundation.mjs && node scripts/test-data-step2.mjs && node scripts/test-map-step3.mjs",
+    "test": "node scripts/contrast.mjs && node scripts/test-foundation.mjs && node scripts/test-data-step2.mjs && node scripts/test-map-step3.mjs && node scripts/test-audio-step4.mjs",
     "preview": "vite preview",
     "check:contrast": "node scripts/contrast.mjs"
   },

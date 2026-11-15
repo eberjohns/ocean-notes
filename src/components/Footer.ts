@@ -11,7 +11,14 @@ export function createFooter(): HTMLElement {
       </div>
 
       <div class="footer-bottom">
-        <div>
+        <div style="display: flex; align-items: center; gap: var(--space-2);">
+          <svg style="width: 20px; height: 20px; color: var(--accent);" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="50" cy="50" r="38" />
+            <circle cx="50" cy="50" r="26" />
+            <path d="M50 34V66" />
+            <path d="M41 41V59" />
+            <path d="M59 38V62" />
+          </svg>
           <span>Ocean Notes · NASA Space Apps Challenge 2026</span>
         </div>
         <div style="display: flex; gap: var(--space-4);">

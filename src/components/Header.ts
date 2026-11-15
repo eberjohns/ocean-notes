@@ -1,4 +1,5 @@
 import { store, type AppState } from '../state.ts';
+import { audioEngine } from '../audio/engine.ts';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -73,18 +74,29 @@ export function createHeader(): HTMLElement {
 
     if (state.isMuted) {
       if (muteIcon) muteIcon.textContent = '🔇';
-      if (muteLabel) muteLabel.textContent = 'Muted';
-      muteBtn?.setAttribute('aria-label', 'Unmute audio');
+      if (muteLabel) muteLabel.textContent = 'Sound Off';
+      muteBtn?.classList.remove('is-active');
+      muteBtn?.setAttribute('aria-label', 'Turn on sound');
     } else {
-      if (muteIcon) muteIcon.textContent = state.soundOptIn ? '🔊' : '🔈';
-      if (muteLabel) muteLabel.textContent = state.soundOptIn ? 'Sound On' : 'Sound Off';
-      muteBtn?.setAttribute('aria-label', state.soundOptIn ? 'Mute audio' : 'Turn on sound');
+      if (muteIcon) muteIcon.textContent = '🔊';
+      if (muteLabel) muteLabel.textContent = 'Sound On';
+      muteBtn?.classList.add('is-active');
+      muteBtn?.setAttribute('aria-label', 'Mute audio');
     }
   });
 
   const muteBtn = header.querySelector<HTMLButtonElement>('#header-mute-btn');
-  muteBtn?.addEventListener('click', () => {
+  muteBtn?.addEventListener('click', async () => {
     store.toggleMute();
+    const isNowMuted = store.getState().isMuted;
+    if (!isNowMuted) {
+      try {
+        await audioEngine.init();
+      } catch (err) {
+        console.warn('AudioContext init error on header button:', err);
+      }
+    }
+    audioEngine.setMuted(isNowMuted);
   });
 
   return header;

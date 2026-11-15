@@ -1,4 +1,5 @@
 import { store, type AppState } from '../state.ts';
+import { audioEngine } from '../audio/engine.ts';
 
 export function createSoundBanner(): HTMLElement {
   const banner = document.createElement('aside');
@@ -24,12 +25,19 @@ export function createSoundBanner(): HTMLElement {
   const btnOn = banner.querySelector<HTMLButtonElement>('#btn-sound-on');
   const btnSilent = banner.querySelector<HTMLButtonElement>('#btn-sound-silent');
 
-  btnOn?.addEventListener('click', () => {
+  btnOn?.addEventListener('click', async () => {
     store.setSoundOptIn(true);
+    try {
+      await audioEngine.init();
+      audioEngine.setMuted(false);
+    } catch (err) {
+      console.warn('AudioContext init error:', err);
+    }
   });
 
   btnSilent?.addEventListener('click', () => {
     store.setSoundOptIn(false);
+    audioEngine.setMuted(true);
   });
 
   store.subscribe((state: AppState) => {
