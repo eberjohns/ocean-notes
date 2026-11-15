@@ -157,3 +157,4 @@ ocean-notes/
 - **Ocean Current Data**: Courtesy of NASA PO.DAAC / Earthdata.
 - **Bathymetry Data**: GEBCO Compilation Group (2026). The GEBCO_2026 Grid ([doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa](https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa)).
 - **Typography**: Sora, Inter, and IBM Plex Mono licensed under the SIL Open Font License (OFL 1.1).
+
