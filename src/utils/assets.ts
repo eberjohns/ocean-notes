@@ -1,9 +1,10 @@
 /**
  * Resolves static asset URLs relative to Vite's configured BASE_URL.
- * Supports root deployments ('/') as well as GitHub Pages subpaths ('/ocean-notes/').
+ * Supports root deployments ('/'), local Node test runners, and GitHub Pages subpaths ('/ocean-notes/').
  */
 export function assetUrl(path: string): string {
-  const base = import.meta.env.BASE_URL || '/';
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  const envBase = (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.BASE_URL) as string | undefined;
+  const base = envBase || '/';
+  const cleanPath = path.replace(/^(\.\/|\/)/, '');
   return base.endsWith('/') ? `${base}${cleanPath}` : `${base}/${cleanPath}`;
 }
