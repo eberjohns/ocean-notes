@@ -96,3 +96,4 @@ export function sectorToMidi(sector: number, scale: ScaleName = 'dorian'): numbe
   const safeSector = ((sector % 16) + 16) % 16;
   return SCALE_16_SECTORS[scale][safeSector];
 }
+

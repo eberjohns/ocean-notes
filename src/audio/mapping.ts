@@ -87,3 +87,4 @@ export function getHarmonicOffsetsForCoherence(coherence: number): number[] {
     return [0, 1, 6];
   }
 }
+

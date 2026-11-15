@@ -32,6 +32,7 @@ export class AudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private limiter: DynamicsCompressorNode | null = null;
+  private analyser: AnalyserNode | null = null;
   private polyphony: PolyphonyManager;
 
   private isSoundMuted: boolean = true;
@@ -71,11 +72,11 @@ export class AudioEngine {
 
       this.ctx = new AudioCtxClass();
 
-      // Master Limiter (Brickwall anti-clipping protection)
+      // Master Limiter / Dynamics Compressor (Calibrated peak controller)
       this.limiter = this.ctx.createDynamicsCompressor();
       this.limiter.threshold.setValueAtTime(-1.5, this.ctx.currentTime); // -1.5 dBFS
       this.limiter.knee.setValueAtTime(0.0, this.ctx.currentTime);        // Hard knee
-      this.limiter.ratio.setValueAtTime(20.0, this.ctx.currentTime);      // 20:1 brickwall limiter
+      this.limiter.ratio.setValueAtTime(20.0, this.ctx.currentTime);      // 20:1 high-ratio compression
       this.limiter.attack.setValueAtTime(0.003, this.ctx.currentTime);    // 3 ms fast response
       this.limiter.release.setValueAtTime(0.1, this.ctx.currentTime);     // 100 ms release
 
@@ -84,9 +85,14 @@ export class AudioEngine {
       const initialGain = this.isSoundMuted ? 0.0001 : this.nominalGainValue;
       this.masterGain.gain.setValueAtTime(initialGain, this.ctx.currentTime);
 
-      // Graph: [Voices] -> [MasterGain] -> [Limiter] -> [Destination]
+      // Analyser Node for telemetry and output peak measurement
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 512;
+
+      // Graph: [Voices] -> [MasterGain] -> [Compressor/Limiter] -> [Analyser] -> [Destination]
       this.masterGain.connect(this.limiter);
-      this.limiter.connect(this.ctx.destination);
+      this.limiter.connect(this.analyser);
+      this.analyser.connect(this.ctx.destination);
     }
 
     if (this.ctx.state === 'suspended') {
@@ -154,6 +160,33 @@ export class AudioEngine {
 
   public getActiveVoicesCount(): number {
     return this.polyphony.getActiveCount();
+  }
+
+  public getAnalyser(): AnalyserNode | null {
+    return this.analyser;
+  }
+
+  /**
+   * Reads the current peak absolute waveform amplitude from the master bus [0.0, 1.0+].
+   */
+  public getPeakLevel(): number {
+    if (!this.analyser) return 0;
+    const data = new Float32Array(this.analyser.fftSize);
+    this.analyser.getFloatTimeDomainData(data);
+    let peak = 0;
+    for (let i = 0; i < data.length; i++) {
+      const abs = Math.abs(data[i]);
+      if (abs > peak) peak = abs;
+    }
+    return peak;
+  }
+
+  /**
+   * Returns the measured peak amplitude in decibels relative to full scale (dBFS).
+   */
+  public getPeakDb(): number {
+    const peak = this.getPeakLevel();
+    return peak > 0.00001 ? 20 * Math.log10(peak) : -100;
   }
 
   /**
@@ -257,8 +290,10 @@ export class AudioEngine {
   public scheduleDay(day: Grid8Day, startTime: number, options?: DayScheduleOptions): void {
     if (!this.ctx || !this.masterGain) return;
 
-    const bpm = options?.bpm || DEFAULT_BPM;
-    const beatSec = 60 / bpm; // ~0.5455 s
+    const baseBpm = options?.bpm || DEFAULT_BPM;
+    const speed = options?.speed || 1.0;
+    const bpm = baseBpm * speed;
+    const beatSec = 60 / bpm; // ~0.5455 s at 1x
     const scale = options?.scale || this.currentScale;
 
     // Bars 1 to 3: 12 beats spanning columns 0 to 7 west to east

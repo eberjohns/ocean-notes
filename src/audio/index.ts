@@ -8,3 +8,6 @@ export * from './scales.ts';
 export * from './mapping.ts';
 export * from './voices.ts';
 export * from './engine.ts';
+export * from './transport.ts';
+
+

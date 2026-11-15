@@ -1,6 +1,6 @@
 import { ReliefMap } from '../components/visualizer/ReliefMap.ts';
 import { loadGrid8, type Grid8Dataset } from '../data/loader.ts';
-import { audioEngine } from '../audio/engine.ts';
+import { audioEngine, transport, type PlaybackSpeed } from '../audio/index.ts';
 import { store } from '../state.ts';
 
 export function renderExplorer(): HTMLElement {
@@ -122,7 +122,7 @@ export function renderExplorer(): HTMLElement {
       </div>
 
       <!-- Map Attribution Line (Rule 12: Exact GEBCO Attribution) -->
-      <div style="position: absolute; bottom: var(--space-2); right: var(--gutter); z-index: 20; font-size: 0.6875rem; color: var(--text-muted); background: rgba(6,19,31,0.75); padding: 3px 8px; border-radius: var(--radius-sm); pointer-events: auto;">
+      <div style="position: absolute; bottom: var(--space-2); right: var(--gutter); max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; z-index: 20; font-size: 0.6875rem; color: var(--text-muted); background: rgba(6,19,31,0.75); padding: 3px 8px; border-radius: var(--radius-sm); pointer-events: auto;">
         GEBCO_2026 Grid &middot; <a href="https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa</a> &middot; NASA OSCAR L4
       </div>
     </div>
@@ -132,7 +132,7 @@ export function renderExplorer(): HTMLElement {
       <div class="transport-inner">
         
         <!-- Left: Large Play Button + Waveform + Track Title -->
-        <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+        <div class="transport-track-info">
           <button type="button" class="play-circle-btn" id="btn-transport-play" aria-label="Play October 2026 Ocean Composition">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5v14l11-7z"/>
@@ -157,30 +157,54 @@ export function renderExplorer(): HTMLElement {
             <div class="wave-bar" style="height: 12px;"></div>
           </div>
 
-          <div style="display: flex; flex-direction: column;">
-            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text);">Ocean Composition &mdash; October 2026</span>
+          <div class="transport-track-text">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Ocean Composition &mdash; October 2026</span>
             <span class="font-mono text-muted" style="font-size: 0.6875rem;" id="transport-day-text">Oct 01, 2026 (Day 1 of 31)</span>
           </div>
         </div>
 
         <!-- Center: Day Steppers & 31-Tick Scrubber -->
-        <div style="flex: 1; max-width: 420px; display: flex; align-items: center; gap: var(--space-2);">
-          <button type="button" class="btn btn-secondary" id="btn-transport-prev" aria-label="Previous Day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;">
+        <div class="transport-scrubber-row">
+          <button type="button" class="btn btn-secondary" id="btn-transport-prev" aria-label="Previous day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;" disabled>
             &#9664;
           </button>
-          <input type="range" id="timeline-slider" min="1" max="31" value="1" step="1"
-                 aria-label="Timeline scrubber, October 1 to 31, 2026"
-                 aria-valuetext="October 1, day 1 of 31"
-                 style="flex: 1; cursor: pointer; accent-color: var(--accent);" />
-          <button type="button" class="btn btn-secondary" id="btn-transport-next" aria-label="Next Day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;">
+          <div class="timeline-slider-wrap">
+            <input type="range" id="timeline-slider" class="timeline-slider" min="1" max="31" value="1" step="1"
+                   list="timeline-ticks"
+                   aria-label="Timeline scrubber, October 1 to 31, 2026"
+                   aria-valuemin="1" aria-valuemax="31" aria-valuenow="1"
+                   aria-valuetext="October 1, day 1 of 31" />
+            <datalist id="timeline-ticks">
+              <option value="1"></option>
+              <option value="5"></option>
+              <option value="10"></option>
+              <option value="15"></option>
+              <option value="20"></option>
+              <option value="25"></option>
+              <option value="31"></option>
+            </datalist>
+            <div class="timeline-ticks-labels" aria-hidden="true">
+              <span>Oct 1</span>
+              <span>Oct 16</span>
+              <span>Oct 31</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary" id="btn-transport-next" aria-label="Next day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;">
             &#9654;
           </button>
         </div>
 
-        <!-- Right: Time readout & Lab direct link -->
-        <div style="display: flex; align-items: center; gap: var(--space-3);">
-          <span class="font-mono text-muted" style="font-size: var(--t-small);" id="transport-time-code">0:00 / 4:30</span>
-          <a href="#/lab" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 14px; min-height: 36px; white-space: nowrap;">Open in Lab</a>
+        <!-- Right: Speed Multiplier, Time readout & Lab direct link -->
+        <div class="transport-bottom-row" style="display: flex; align-items: center; gap: var(--space-3); flex-shrink: 0;">
+          <!-- Speed Multiplier Controls (0.5x, 1x, 2x) -->
+          <div class="speed-control-group" role="group" aria-label="Playback speed">
+            <button type="button" class="btn-speed" data-speed="0.5" aria-pressed="false" aria-label="Play at half speed (0.5x)">0.5&times;</button>
+            <button type="button" class="btn-speed is-active" data-speed="1" aria-pressed="true" aria-label="Play at normal speed (1x)">1&times;</button>
+            <button type="button" class="btn-speed" data-speed="2" aria-pressed="false" aria-label="Play at double speed (2x)">2&times;</button>
+          </div>
+
+          <span class="font-mono text-muted" style="font-size: var(--t-small); min-width: 76px; text-align: right;" id="transport-time-code">0:00 / 4:30</span>
+          <a href="#/lab" class="btn btn-secondary btn-open-in-lab" style="font-size: 0.75rem; padding: 6px 14px; min-height: 36px; white-space: nowrap;">Open in Lab</a>
         </div>
       </div>
     </div>
@@ -206,6 +230,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
   let currentDayIdx = 0; // 0..30
   let selectedRow = 3;   // 0..7 (Row 4 in 1-based UI)
   let selectedCol = 4;   // 0..7 (Col 5 in 1-based UI)
+  let userSelectedExplicitly = false;
 
   // URL hash parameter support (e.g. #/explore?cell=8,8 or #/explore?view=clean)
   const hash = window.location.hash;
@@ -213,6 +238,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
   if (cellMatch) {
     selectedRow = Math.max(0, Math.min(7, parseInt(cellMatch[1], 10) - 1));
     selectedCol = Math.max(0, Math.min(7, parseInt(cellMatch[2], 10) - 1));
+    userSelectedExplicitly = true;
   }
   if (hash.includes('view=clean')) {
     const readoutCard = page.querySelector<HTMLElement>('#cell-readout-card');
@@ -242,6 +268,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
         btn.setAttribute('data-row', String(r));
         btn.setAttribute('data-col', String(c));
         btn.addEventListener('click', () => {
+          userSelectedExplicitly = true;
           selectedRow = r;
           selectedCol = c;
           if (reliefMap) {
@@ -268,6 +295,7 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
       initialRow: selectedRow,
       initialCol: selectedCol,
       onCellSelect: (row: number, col: number) => {
+        userSelectedExplicitly = true;
         selectedRow = row;
         selectedCol = col;
         updateUI();
@@ -367,45 +395,118 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
       dayText.textContent = `${day.date} (Day ${day.day_index} of 31)`;
     }
 
-    const timeCode = page.querySelector('#transport-time-code');
-    if (timeCode) {
-      const totalSeconds = 270; // 4:30
-      const currentSeconds = Math.round(((day.day_index - 1) / 30) * totalSeconds);
-      const m = Math.floor(currentSeconds / 60);
-      const s = currentSeconds % 60;
-      timeCode.textContent = `${m}:${s < 10 ? '0' : ''}${s} / 4:30`;
-    }
-
-    // Update Slider
+    // Update Slider if not currently being dragged by user
     const slider = page.querySelector<HTMLInputElement>('#timeline-slider');
-    if (slider) {
+    if (slider && document.activeElement !== slider) {
       slider.value = String(day.day_index);
+      slider.setAttribute('aria-valuenow', String(day.day_index));
       slider.setAttribute('aria-valuetext', `${day.date}, day ${day.day_index} of 31`);
     }
+
+    // Update prev/next button states
+    const prevBtn = page.querySelector<HTMLButtonElement>('#btn-transport-prev');
+    if (prevBtn) prevBtn.disabled = day.day_index === 1;
+
+    const nextBtn = page.querySelector<HTMLButtonElement>('#btn-transport-next');
+    if (nextBtn) nextBtn.disabled = day.day_index === 31;
   }
 
-  // Bind transport events
-  const prevBtn = page.querySelector('#btn-transport-prev');
+  // Connect Transport
+  transport.setDataset(dataset);
+
+  const prevBtn = page.querySelector<HTMLButtonElement>('#btn-transport-prev');
   prevBtn?.addEventListener('click', () => {
-    if (currentDayIdx > 0) {
-      currentDayIdx--;
-      updateUI();
-    }
+    transport.stepDay(-1);
   });
 
-  const nextBtn = page.querySelector('#btn-transport-next');
+  const nextBtn = page.querySelector<HTMLButtonElement>('#btn-transport-next');
   nextBtn?.addEventListener('click', () => {
-    if (currentDayIdx < 30) {
-      currentDayIdx++;
-      updateUI();
-    }
+    transport.stepDay(1);
   });
 
   const slider = page.querySelector<HTMLInputElement>('#timeline-slider');
   slider?.addEventListener('input', (e) => {
     const val = parseInt((e.target as HTMLInputElement).value, 10);
-    currentDayIdx = Math.max(0, Math.min(30, val - 1));
+    slider.setAttribute('aria-valuenow', String(val));
+    slider.setAttribute('aria-valuetext', `October ${val}, day ${val} of 31`);
+    transport.seekToDay(val - 1);
+  });
+
+  // Play button audio transport
+  const playBtn = page.querySelector<HTMLButtonElement>('#btn-transport-play');
+  const waveBars = page.querySelectorAll<HTMLElement>('.wave-bar');
+
+  playBtn?.addEventListener('click', async () => {
+    if (transport.getState() !== 'playing') {
+      if (audioEngine.isMuted()) {
+        store.setSoundOptIn(true);
+      }
+    }
+    await transport.togglePlay();
+  });
+
+  // Speed Multiplier controls
+  const speedBtns = page.querySelectorAll<HTMLButtonElement>('.btn-speed');
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const spd = parseFloat(btn.getAttribute('data-speed') || '1') as PlaybackSpeed;
+      transport.setSpeed(spd);
+      speedBtns.forEach(b => {
+        const isActive = b === btn;
+        b.classList.toggle('is-active', isActive);
+        b.setAttribute('aria-pressed', String(isActive));
+      });
+    });
+  });
+
+  // Subscribe to authoritative transport snapshot
+  transport.subscribeSnapshot((snap) => {
+    // 1. Play button icon and label
+    if (playBtn) {
+      if (snap.state === 'playing') {
+        playBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:0;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        playBtn.setAttribute('aria-label', 'Pause ocean composition');
+      } else if (snap.state === 'ended') {
+        playBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>`;
+        playBtn.setAttribute('aria-label', 'Replay October 2026 Ocean Composition');
+      } else {
+        playBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M8 5v14l11-7z"/></svg>`;
+        playBtn.setAttribute('aria-label', 'Play October 2026 Ocean Composition');
+      }
+    }
+
+    // 2. Waveform bars animation
+    waveBars.forEach((bar, idx) => {
+      bar.classList.toggle('pulse', snap.state === 'playing');
+      bar.style.animationDelay = `${(idx * 0.08).toFixed(2)}s`;
+    });
+
+    // 3. Timecode
+    const timeCode = page.querySelector('#transport-time-code');
+    if (timeCode) {
+      timeCode.textContent = snap.timeString;
+    }
+
+    // 4. Steppers disabled state
+    if (prevBtn) prevBtn.disabled = snap.dayUi === 1;
+    if (nextBtn) nextBtn.disabled = snap.dayUi === 31;
+  });
+
+  // Subscribe to Day Change: updates live caption once per day
+  transport.subscribeDayChange((day, dominantCell, caption) => {
+    currentDayIdx = day.day_index - 1;
+    if (!userSelectedExplicitly) {
+      selectedRow = dominantCell.row;
+      selectedCol = dominantCell.column;
+      if (reliefMap) reliefMap.selectCell(dominantCell.row, dominantCell.column);
+    }
     updateUI();
+
+    const captionDate = page.querySelector('#caption-date-tag');
+    if (captionDate) captionDate.textContent = `${day.date} (Day ${day.day_index} of 31):`;
+
+    const captionText = page.querySelector('#caption-text');
+    if (captionText) captionText.textContent = caption.text;
   });
 
   // Layer toggles
@@ -457,64 +558,6 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
       }
     }
   }
-
-  // Play button audio transport
-  const playBtn = page.querySelector<HTMLButtonElement>('#btn-transport-play');
-  const waveBars = page.querySelectorAll<HTMLElement>('.wave-bar');
-  let isPlaying = false;
-
-  function updatePlayButtonUI(): void {
-    if (playBtn) {
-      playBtn.innerHTML = isPlaying
-        ? `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:0;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
-        : `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M8 5v14l11-7z"/></svg>`;
-      playBtn.setAttribute('aria-label', isPlaying ? 'Pause ocean composition' : 'Play October 2026 Ocean Composition');
-    }
-    waveBars.forEach((bar, idx) => {
-      bar.classList.toggle('pulse', isPlaying);
-      bar.style.animationDelay = `${(idx * 0.08).toFixed(2)}s`;
-    });
-  }
-
-  playBtn?.addEventListener('click', async () => {
-    if (isPlaying) {
-      isPlaying = false;
-      audioEngine.stopAll(0.08);
-      updatePlayButtonUI();
-    } else {
-      try {
-        await audioEngine.init();
-        if (audioEngine.isMuted()) {
-          audioEngine.setMuted(false);
-          store.setSoundOptIn(true);
-        }
-        isPlaying = true;
-        updatePlayButtonUI();
-
-        const currentDay = dataset.days[currentDayIdx];
-        audioEngine.scheduleDay(currentDay, audioEngine.getCurrentTime(), {
-          onNoteStart: (note) => {
-            selectedRow = note.row;
-            selectedCol = note.col;
-            if (reliefMap) reliefMap.selectCell(note.row, note.col);
-            updateUI();
-          }
-        });
-      } catch (err) {
-        console.warn('Playback initialization error:', err);
-      }
-    }
-  });
-
-  // Trace sounding notes in the live caption
-  audioEngine.subscribeNote((note) => {
-    const captionText = page.querySelector('#caption-text');
-    if (captionText) {
-      const headingDesc = note.u >= 0 ? 'eastward' : 'westward';
-      const panDesc = note.pan < -0.2 ? 'left' : note.pan > 0.2 ? 'right' : 'center';
-      captionText.textContent = `${note.date}: Row ${note.rowUi}, Col ${note.colUi} (${note.pitchName}, ${note.frequency.toFixed(1)} Hz, pan ${panDesc}) - ${note.speed.toFixed(3)} m/s ${headingDesc} flow. Voice: ${note.voice}.`;
-    }
-  });
 
   // Copy cell values handler
   const copyBtn = page.querySelector<HTMLButtonElement>('#btn-copy-readout');
