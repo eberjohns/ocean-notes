@@ -1,0 +1,207 @@
+{
+  "project": "Ocean Notes",
+  "challenge": "NASA Space Apps Challenge 2026",
+  "generation_timestamp_utc": "2026-11-15T14:19:54.505303+00:00",
+  "region": {
+    "name": "Tropical Indian Ocean",
+    "lat_bounds": [
+      -10.0,
+      10.0
+    ],
+    "lon_bounds": [
+      60.0,
+      90.0
+    ]
+  },
+  "period": {
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "days_count": 31
+  },
+  "datasets": {
+    "ocean_currents": {
+      "source": "NASA OSCAR L4 Ocean Currents NRT v2.0 (PO.DAAC)",
+      "doi": "10.5067/OSCAR-25N20",
+      "doi_url": "https://doi.org/10.5067/OSCAR-25N20",
+      "nature": "Model-derived from satellite altimetry, scatterometer wind fields, and drifters (0-30m layer average)",
+      "fine_grid": {
+        "file": "fine-uv.bin",
+        "shape": [
+          31,
+          2,
+          81,
+          121
+        ],
+        "dtype": "int16 little-endian",
+        "scale": 1000,
+        "units": "m/s",
+        "missing_value": -32768,
+        "valid_points_per_day": 9641,
+        "missing_points_per_day": 160,
+        "sha256": "644d7c673bcb1db9ebad1e79c37d8d931977807284f3bd1ba76d0f2a18e9e945"
+      },
+      "audio_grid": {
+        "file": "grid8.json",
+        "shape": [
+          8,
+          8
+        ],
+        "total_cells": 64,
+        "row_indexing": "1-based in UI, row 1 at South (-8.75\u00b0), row 8 at North (+8.875\u00b0)",
+        "column_indexing": "1-based in UI, column 1 at West (61.875\u00b0), column 8 at East (88.25\u00b0)",
+        "lat_centers": [
+          -8.75,
+          -6.125,
+          -3.625,
+          -1.125,
+          1.375,
+          3.875,
+          6.375,
+          8.875
+        ],
+        "lon_centers": [
+          61.875,
+          65.75,
+          69.5,
+          73.25,
+          77.0,
+          80.75,
+          84.5,
+          88.25
+        ],
+        "row_slices_025deg": [
+          [
+            0,
+            11
+          ],
+          [
+            11,
+            21
+          ],
+          [
+            21,
+            31
+          ],
+          [
+            31,
+            41
+          ],
+          [
+            41,
+            51
+          ],
+          [
+            51,
+            61
+          ],
+          [
+            61,
+            71
+          ],
+          [
+            71,
+            81
+          ]
+        ],
+        "col_slices_025deg": [
+          [
+            0,
+            16
+          ],
+          [
+            16,
+            31
+          ],
+          [
+            31,
+            46
+          ],
+          [
+            46,
+            61
+          ],
+          [
+            61,
+            76
+          ],
+          [
+            76,
+            91
+          ],
+          [
+            91,
+            106
+          ],
+          [
+            106,
+            121
+          ]
+        ],
+        "sha256": "305b25c733639c53df28aebc6377242a9722a95fc8864b6babee3dd3d41ddc50"
+      }
+    },
+    "bathymetry": {
+      "source": "GEBCO Bathymetric Compilation Group 2026 (2026). The GEBCO_2026 Grid - a continuous terrain model for oceans and land at 15 arc-second intervals. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa",
+      "doi": "10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa",
+      "doi_url": "https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa",
+      "gebco_metadata": {
+        "source": "gebco_2026_n10.0_s-10.0_w60.0_e90.0.nc",
+        "variable": "elevation",
+        "units": "metres",
+        "dimensions": {
+          "latitude": 4800,
+          "longitude": 7200
+        },
+        "bounds": {
+          "north": 9.99791666666667,
+          "south": -9.997916666666669,
+          "west": 60.00208333333333,
+          "east": 89.99791666666664
+        },
+        "elevation_range_m": {
+          "minimum": -6319.0,
+          "maximum": 2475.0
+        },
+        "height_encoding": {
+          "minimum": -6319.0,
+          "maximum": 2475.0,
+          "formula": "elevation = minimum + (pixel / 65535) * (maximum - minimum)"
+        },
+        "visual_dimensions": {
+          "width": 3600,
+          "height": 2400
+        },
+        "normal_map_vertical_exaggeration": 8.0,
+        "numerical_data": "bathymetry-elevation.f32",
+        "numerical_dtype": "float32 little-endian"
+      }
+    }
+  },
+  "formulas": {
+    "point_speed": "sqrt(u^2 + v^2)",
+    "vector_mean_u": "mean(valid u points within cell)",
+    "vector_mean_v": "mean(valid v points within cell)",
+    "vector_speed": "sqrt(u_mean^2 + v_mean^2)",
+    "direction_deg": "atan2(v_mean, u_mean) * (180 / pi)",
+    "mean_cell_speed": "mean(point_speed for all valid points within cell)",
+    "directional_coherence": "vector_speed / mean_cell_speed",
+    "height_decode_elevation_m": "minimum + (pixel / 65535) * (maximum - minimum)"
+  },
+  "source_checksums": {
+    "indian_ocean_october_2026.json": "8156167df4810dbbcb11275011ecd8a01192dc584cb32a3d1a9c9586af84ecc4",
+    "fine-uv.bin": "644d7c673bcb1db9ebad1e79c37d8d931977807284f3bd1ba76d0f2a18e9e945"
+  },
+  "si_disclosure": {
+    "compliance": "NASA Space Apps Challenge Super Intelligence Policy: No NASA logos, flags, or mission insignias used in generated content.",
+    "tools": [
+      "Anthropic Claude",
+      "OpenAI ChatGPT",
+      "Google Antigravity"
+    ],
+    "breakdown": {
+      "images": "Planetary horizon graphic created with generative AI assistance and marked with visible SI watermark.",
+      "audio": "Deterministic parameter mappings and Web Audio polyphonic synthesizer voices designed and verified with AI assistance.",
+      "code_and_data": "TypeScript architecture, WebGL Three.js shaders, binary Int16 decoding pipeline, and automated verification tests authored with AI assistance."
+    }
+  }
+}

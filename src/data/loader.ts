@@ -1,3 +1,5 @@
+import { assetUrl } from '../utils/assets.ts';
+
 /**
  * Dataset Loader & Validator for Ocean Notes
  * Handles loading and decoding of:
@@ -79,7 +81,7 @@ let cachedFineMeta: FineGridMeta | null = null;
 /**
  * Loads and validates grid8.json
  */
-export async function loadGrid8(baseUrl: string = '/data/grid8.json'): Promise<Grid8Dataset> {
+export async function loadGrid8(baseUrl: string = assetUrl('data/grid8.json')): Promise<Grid8Dataset> {
   if (cachedGrid8) return cachedGrid8;
 
   const res = await fetch(baseUrl);
@@ -133,8 +135,8 @@ export async function loadGrid8(baseUrl: string = '/data/grid8.json'): Promise<G
  * Loads fine-grid metadata and binary buffer
  */
 export async function loadFineGrid(
-  binUrl: string = '/data/fine-uv.bin',
-  metaUrl: string = '/data/fine-meta.json'
+  binUrl: string = assetUrl('data/fine-uv.bin'),
+  metaUrl: string = assetUrl('data/fine-meta.json')
 ): Promise<{ meta: FineGridMeta; buffer: ArrayBuffer }> {
   if (cachedFineMeta && cachedFineBuffer) {
     return { meta: cachedFineMeta, buffer: cachedFineBuffer };
@@ -231,7 +233,7 @@ export function decodeFineDay(
 /**
  * Loads project metadata
  */
-export async function loadMetadata(metaUrl: string = '/data/meta.json'): Promise<any> {
+export async function loadMetadata(metaUrl: string = assetUrl('data/meta.json')): Promise<any> {
   const res = await fetch(metaUrl);
   if (!res.ok) throw new Error(`Failed to load ${metaUrl}: HTTP ${res.status}`);
   return res.json();

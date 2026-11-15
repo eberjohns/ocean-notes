@@ -36,6 +36,8 @@ export function createHeader(): HTMLElement {
           <a href="#/lab" class="mode-pill-link" id="pill-research" data-route="/lab">Research</a>
         </div>
 
+        <div class="header-divider" aria-hidden="true"></div>
+
         <!-- Mute Button -->
         <button type="button" class="audio-toggle-btn" id="header-mute-btn" aria-label="Mute audio">
           <span id="mute-icon" aria-hidden="true">🔊</span>

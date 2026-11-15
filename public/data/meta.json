@@ -190,5 +190,18 @@
   "source_checksums": {
     "indian_ocean_october_2026.json": "8156167df4810dbbcb11275011ecd8a01192dc584cb32a3d1a9c9586af84ecc4",
     "fine-uv.bin": "644d7c673bcb1db9ebad1e79c37d8d931977807284f3bd1ba76d0f2a18e9e945"
+  },
+  "si_disclosure": {
+    "compliance": "NASA Space Apps Challenge Super Intelligence Policy: No NASA logos, flags, or mission insignias used in generated content.",
+    "tools": [
+      "Anthropic Claude",
+      "OpenAI ChatGPT",
+      "Google Antigravity"
+    ],
+    "breakdown": {
+      "images": "Planetary horizon graphic created with generative AI assistance and marked with visible SI watermark.",
+      "audio": "Deterministic parameter mappings and Web Audio polyphonic synthesizer voices designed and verified with AI assistance.",
+      "code_and_data": "TypeScript architecture, WebGL Three.js shaders, binary Int16 decoding pipeline, and automated verification tests authored with AI assistance."
+    }
   }
 }

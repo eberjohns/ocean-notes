@@ -1,5 +1,7 @@
 import { store } from '../state.ts';
 import { audioEngine } from '../audio/engine.ts';
+import { EarthHaze } from '../components/effects/EarthHaze.ts';
+import { GhostCursor } from '../components/effects/GhostCursor.ts';
 
 export function renderHome(): HTMLElement {
   const page = document.createElement('div');
@@ -10,6 +12,12 @@ export function renderHome(): HTMLElement {
     <div class="home-globe-layer" id="home-globe-layer" aria-hidden="true">
       <div class="home-globe-visual" id="home-globe-visual"></div>
       <div class="home-globe-ambient"></div>
+      
+      <!-- Visible Watermark for Super Intelligence (SI) Generated Asset (NASA Space Apps Rule) -->
+      <div class="si-watermark-tag" title="Super Intelligence (SI) Disclosure: Planetary imagery generated with AI assistance. Contains no NASA branding or mission insignias.">
+        <span class="si-watermark-badge">SI-Generated</span>
+        <span class="si-watermark-text">AI Assisted &bull; Claude &bull; ChatGPT &bull; Google Antigravity</span>
+      </div>
     </div>
 
     <!-- Hero Viewport -->
@@ -24,7 +32,7 @@ export function renderHome(): HTMLElement {
             <span class="hero-eyebrow-line" aria-hidden="true"></span>
           </div>
 
-          <!-- Display Headline (Sora typography) -->
+          <!-- Display Headline (Sora typography, proportional lock) -->
           <h1 class="hero-headline" id="hero-title">Hear the <span class="headline-block">ocean move.</span></h1>
 
           <!-- Lead Description -->
@@ -87,14 +95,39 @@ export function renderHome(): HTMLElement {
     </section>
   `;
 
+  // Mount ReactBits-inspired interactive effects: EarthHaze & GhostCursor
+  const prefersReducedMotion = typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
+  let hazeEffect: EarthHaze | null = null;
+  let ghostCursor: GhostCursor | null = null;
+
+  if (!prefersReducedMotion) {
+    const globeLayer = page.querySelector<HTMLElement>('#home-globe-layer');
+    if (globeLayer) {
+      hazeEffect = new EarthHaze(globeLayer);
+    }
+    ghostCursor = new GhostCursor(page);
+  }
+
+  // Cleanup observers when page detached from DOM
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(() => {
+      if (!document.body.contains(page)) {
+        hazeEffect?.destroy();
+        ghostCursor?.destroy();
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
   // Meaningful Cinematic Globe-Dive Motion Transition
   let isNavigating = false;
   const triggerDiveTransition = (targetHash = '#/explore') => {
     if (isNavigating) return;
     isNavigating = true;
 
-    // Check prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       window.location.hash = targetHash;
       return;
@@ -116,7 +149,7 @@ export function renderHome(): HTMLElement {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(293.66, ctx.currentTime); // D4 resonant harmonic
+          osc.frequency.setValueAtTime(293.66, ctx.currentTime);
           gain.gain.setValueAtTime(0.08, ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
           osc.connect(gain);
@@ -125,7 +158,7 @@ export function renderHome(): HTMLElement {
           osc.stop(ctx.currentTime + 0.4);
         }
       } catch {
-        // AudioContext may not be active yet, gracefully ignore
+        // gracefully ignore
       }
     }
 
@@ -167,7 +200,7 @@ export function renderHome(): HTMLElement {
     if (isNavigating) return;
     if (e.changedTouches && e.changedTouches[0]) {
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-      if (deltaY > 50) { // Swiped up (scrolling down)
+      if (deltaY > 50) {
         window.removeEventListener('touchstart', onTouchStart);
         window.removeEventListener('touchend', onTouchEnd);
         triggerDiveTransition('#/explore');
