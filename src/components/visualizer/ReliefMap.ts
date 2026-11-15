@@ -25,9 +25,9 @@ export class ReliefMap {
   private selectedCol: number;
   private onCellSelect?: (row: number, col: number) => void;
 
-  // Grid bounds
-  private latBounds = [-10.0, -7.5, -5.0, -2.5, 0.0, 2.5, 5.0, 7.5, 10.0];
-  private lonBounds = [60.0, 63.75, 67.5, 71.25, 75.0, 78.75, 82.5, 86.25, 90.0];
+  // Non-uniform 8x8 bin bounds matching the OSCAR 81x121 fine grid partition
+  private latBounds = [-10.0, -7.375, -4.875, -2.375, 0.125, 2.625, 5.125, 7.625, 10.0];
+  private lonBounds = [60.0, 63.875, 67.625, 71.375, 75.125, 78.875, 82.625, 86.375, 90.0];
 
   private isReducedMotion: boolean = false;
   private isDisposed: boolean = false;
@@ -313,6 +313,11 @@ export class ReliefMap {
     if (layer === 'grid') this.gridGroup.visible = visible;
     if (layer === 'coastlines') this.coastGroup.visible = visible;
     if (layer === 'bathymetry' && this.terrainMesh) this.terrainMesh.visible = visible;
+  }
+
+  public resetView(): void {
+    this.camera.position.set(0, -6, 32);
+    this.camera.lookAt(0, 0, 0);
   }
 
   private startLoop(): void {

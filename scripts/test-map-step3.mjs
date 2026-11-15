@@ -56,9 +56,9 @@ try {
   const coastGeo = JSON.parse(fs.readFileSync(coastJson, 'utf-8'));
   assert(coastGeo.features && coastGeo.features.length > 0, `coast.json contains ${coastGeo.features.length} land polygons`);
 
-  // 2. Geographic alignment and snapping logic
-  const latBounds = [-10.0, -7.5, -5.0, -2.5, 0.0, 2.5, 5.0, 7.5, 10.0];
-  const lonBounds = [60.0, 63.75, 67.5, 71.25, 75.0, 78.75, 82.5, 86.25, 90.0];
+  // 2. Geographic alignment and non-uniform snapping logic
+  const latBounds = [-10.0, -7.375, -4.875, -2.375, 0.125, 2.625, 5.125, 7.625, 10.0];
+  const lonBounds = [60.0, 63.875, 67.625, 71.375, 75.125, 78.875, 82.625, 86.375, 90.0];
 
   function snapCoordinatesToCell(lat, lon) {
     let row = 0;
@@ -98,15 +98,15 @@ try {
   }
   assert(allSnapped, 'All 64 published cell centers snap exactly to their respective 8x8 cell');
 
-  // Test arbitrary boundary points snap strictly to valid cells
+  // Test arbitrary boundary points snap strictly to valid cells under non-uniform definitions
   const testPoints = [
     { lat: -9.9, lon: 60.1, expR: 0, expC: 0 },
     { lat: 9.9, lon: 89.9, expR: 7, expC: 7 },
-    { lat: 0.0, lon: 75.0, expR: 3, expC: 3 }, // exact boundary point
-    { lat: 0.01, lon: 75.01, expR: 4, expC: 4 }, // just inside Row 5, Col 5
+    { lat: 0.0, lon: 75.0, expR: 3, expC: 3 }, // inside Row 4, Col 4
+    { lat: 0.15, lon: 75.2, expR: 4, expC: 4 }, // inside Row 5, Col 5
     { lat: -3.0, lon: 70.0, expR: 2, expC: 2 },
     { lat: 4.5, lon: 85.0, expR: 5, expC: 6 },
-    { lat: -7.49, lon: 63.76, expR: 1, expC: 1 },
+    { lat: -7.30, lon: 64.0, expR: 1, expC: 1 },
     { lat: 7.49, lon: 86.24, expR: 6, expC: 6 }
   ];
 

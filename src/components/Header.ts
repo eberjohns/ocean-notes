@@ -8,10 +8,12 @@ export function createHeader(): HTMLElement {
   header.innerHTML = `
     <div class="header-inner">
       <a href="#/" class="brand" aria-label="Ocean Notes Home">
-        <svg class="brand-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 10 C8 6, 12 14, 16 10 C20 6, 24 14, 28 10" />
-          <path d="M4 16 C8 12, 12 20, 16 16 C20 12, 24 20, 28 16" />
-          <path d="M4 22 C8 18, 12 26, 16 22 C20 18, 24 26, 28 22" />
+        <svg class="brand-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="50" cy="50" r="38" />
+          <circle cx="50" cy="50" r="26" />
+          <path d="M50 34V66" />
+          <path d="M41 41V59" />
+          <path d="M59 38V62" />
         </svg>
         <span>Ocean Notes</span>
       </a>

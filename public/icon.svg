@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Ocean Notes symbol</title>
+  <g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="50" cy="50" r="38" />
+    <circle cx="50" cy="50" r="26" />
+    <path d="M50 34V66" />
+    <path d="M41 41V59" />
+    <path d="M59 38V62" />
+  </g>
+</svg>

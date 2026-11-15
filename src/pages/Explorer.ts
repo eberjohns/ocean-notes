@@ -4,73 +4,59 @@ import { loadGrid8, type Grid8Dataset } from '../data/loader.ts';
 export function renderExplorer(): HTMLElement {
   const page = document.createElement('div');
   page.className = 'explorer-view';
-  page.style.cssText = 'display: flex; flex-direction: column; flex: 1; min-height: calc(100vh - var(--header-height)); position: relative;';
 
   page.innerHTML = `
-    <!-- Top Overlay / Context Scrim (Mockup Fix #5) -->
-    <div style="padding: var(--space-3) var(--gutter); background: linear-gradient(to bottom, rgba(6,19,31,0.92), rgba(6,19,31,0)); z-index: 10;">
-      <div style="max-width: var(--max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
-        <div>
-          <span class="text-muted" style="font-size: var(--t-small); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">
-            Regional Explorer
-          </span>
-          <h1 style="font-size: var(--t-h2); line-height: 1.1; margin: 0;">Indian Ocean</h1>
-          <p class="font-mono text-muted" style="font-size: var(--t-small); margin: 0;">10° S – 10° N · 60° E – 90° E</p>
-        </div>
-
-        <!-- Live Caption (WCAG 2.2 Polite ARIA Live Region) -->
-        <div id="live-caption" class="polite-caption" aria-live="polite" aria-atomic="true"
-             style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-4); max-width: 520px; font-size: var(--t-small);">
-          <span style="color: var(--accent); font-weight: 600;" id="caption-date-tag">Oct 01, 2026:</span>
-          <span id="caption-text">Selected Row 4, Col 5 (-1.125°N, 77.000°E) - 0.153 m/s westward flow.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Viewport Area (Three.js Relief Map & Accessible Grid) -->
-    <div style="flex: 1; min-height: 520px; position: relative; display: flex; overflow: hidden;" id="viewport-wrapper">
+    <!-- Main 3D Viewport Area (Full-Bleed Map Canvas) -->
+    <div style="flex: 1; min-height: 540px; position: relative; display: flex; overflow: hidden;" id="viewport-wrapper">
       
       <!-- Three.js Canvas Container -->
-      <div id="explorer-viewport" style="width: 100%; height: 100%; min-height: 520px; background: #06131F;"
+      <div id="explorer-viewport" style="width: 100%; height: 100%; min-height: 540px; background: #06131F;"
            role="region" aria-label="Interactive Ocean Surface Currents Map"></div>
 
-      <!-- Left Floating Rail: Readout Card & Layer Toggles (Mockup Board 1) -->
-      <div style="position: absolute; top: var(--space-4); left: var(--gutter); z-index: 20; display: flex; flex-direction: column; gap: var(--space-3); max-width: 320px; width: calc(100% - 32px);">
-        
-        <!-- Selected-Cell Readout Card -->
-        <section id="cell-readout-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"
-                 aria-labelledby="readout-card-title">
+      <!-- Hero Header & Narrative Overlay (Top Left - Mockup Board 1) -->
+      <div class="explorer-hero-header">
+        <a href="#/explore" class="explorer-back-link" aria-label="Explore region">
+          <span aria-hidden="true">&larr;</span> Explore
+        </a>
+        <h1 class="explorer-hero-title">Indian Ocean</h1>
+        <div class="explorer-hero-subhead">10° S &ndash; 10° N &middot; 60° E &ndash; 90° E</div>
+        <p class="explorer-hero-desc">
+          Surface currents shape the music &mdash; faster flows add energy, shifts change the tone, and seasonal patterns build the composition.
+        </p>
+
+        <!-- Selected-Cell Readout Card (Glassmorphism Telemetry) -->
+        <section id="cell-readout-card" class="readout-card" aria-labelledby="readout-card-title">
           <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
-            <h2 id="readout-card-title" style="font-size: var(--t-h3);">Selected Cell</h2>
+            <h2 id="readout-card-title" style="font-size: var(--t-h3); margin: 0;">Selected Cell</h2>
             <span class="font-mono" style="font-size: var(--t-small); color: var(--accent); font-weight: 600;" id="readout-rank">Rank #--</span>
           </div>
 
-          <div id="readout-body" style="font-family: var(--font-mono); font-size: var(--t-small); display: flex; flex-direction: column; gap: 6px;">
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+          <div id="readout-body" style="font-family: var(--font-mono); font-size: 0.75rem; display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Index (1-based)</span>
               <strong id="readout-indices">Row 4, Col 5</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Center</span>
               <strong id="readout-coords">-1.125°N, 77.000°E</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Mean Speed (scalar)</span>
               <strong style="color: var(--accent);" id="readout-mean-speed">0.164 m/s</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Vector Speed (|u, v|)</span>
               <strong id="readout-vector-speed">0.153 m/s</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Vector (u, v)</span>
               <strong id="readout-uv">(-0.146, -0.043)</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Heading</span>
               <strong id="readout-dir">-163.7°</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 3px;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(107,225,208,0.15); padding-bottom: 2px;">
               <span class="text-muted">Coherence</span>
               <strong id="readout-coherence">0.928</strong>
             </div>
@@ -86,20 +72,42 @@ export function renderExplorer(): HTMLElement {
             </button>
           </div>
         </section>
+      </div>
 
-        <!-- Layer Toggles -->
-        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); backdrop-filter: blur(12px); display: flex; gap: var(--space-2); flex-wrap: wrap;"
-             role="group" aria-label="Map Visual Layers">
-          <button type="button" class="btn btn-secondary is-active" id="toggle-layer-bathy" style="font-size: 0.75rem; padding: 4px 8px; min-height: 32px;" aria-pressed="true">
-            Relief
-          </button>
-          <button type="button" class="btn btn-secondary is-active" id="toggle-layer-grid" style="font-size: 0.75rem; padding: 4px 8px; min-height: 32px;" aria-pressed="true">
-            8×8 Grid
-          </button>
-          <button type="button" class="btn btn-secondary is-active" id="toggle-layer-coast" style="font-size: 0.75rem; padding: 4px 8px; min-height: 32px;" aria-pressed="true">
-            Coastlines
-          </button>
-        </div>
+      <!-- Right Floating Action Toolbar (Mockup Stack) -->
+      <div class="explorer-floating-tools" role="toolbar" aria-label="Map Visual Controls">
+        <button type="button" class="tool-btn is-active" id="toggle-layer-bathy" aria-label="Toggle Bathymetry Relief" title="Toggle Bathymetry Relief" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn is-active" id="toggle-layer-grid" aria-label="Toggle 8x8 Grid" title="Toggle 8x8 Acoustic Grid" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn is-active" id="toggle-layer-coast" aria-label="Toggle Coastlines" title="Toggle Coastlines" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 12c3-4 6-4 9 0s6 4 9 0M3 18c3-4 6-4 9 0s6 4 9 0"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn is-active" id="btn-toggle-readout" aria-label="Toggle Telemetry Card" title="Toggle Telemetry Card" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" id="btn-reset-view" aria-label="Reset Camera View" title="Reset Camera View">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 9V5a2 2 0 0 1 2-2h4M15 3h4a2 2 0 0 1 2 2v4M21 15v4a2 2 0 0 1-2 2h-4M9 21H5a2 2 0 0 1-2-2v-4"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Live Caption (Polite ARIA Live Region for Screen Readers) -->
+      <div id="live-caption" class="polite-caption" aria-live="polite" aria-atomic="true"
+           style="position: absolute; top: var(--space-4); left: 50%; transform: translateX(-50%); z-index: 22; background: rgba(6,21,34,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(107,225,208,0.2); border-radius: var(--radius-pill); padding: 4px 16px; font-size: 0.75rem; color: var(--text); max-width: 90%; text-align: center; pointer-events: none;">
+        <span style="color: var(--accent); font-weight: 600;" id="caption-date-tag">Oct 01, 2026:</span>
+        <span id="caption-text">Selected Row 4, Col 5 (-1.125°N, 77.000°E) - 0.153 m/s westward flow.</span>
       </div>
 
       <!-- Accessible Keyboard Grid Navigation Overlay (Flow C & Screen Reader Parity) -->
@@ -113,41 +121,64 @@ export function renderExplorer(): HTMLElement {
 
       <!-- Map Attribution Line (Rule 12: Exact GEBCO Attribution) -->
       <div style="position: absolute; bottom: var(--space-2); right: var(--gutter); z-index: 20; font-size: 0.6875rem; color: var(--text-muted); background: rgba(6,19,31,0.75); padding: 3px 8px; border-radius: var(--radius-sm); pointer-events: auto;">
-        GEBCO_2026 Grid · <a href="https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa</a> · NASA OSCAR L4
+        GEBCO_2026 Grid &middot; <a href="https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa</a> &middot; NASA OSCAR L4
       </div>
     </div>
 
-    <!-- Timeline & Transport Bar (Pinned to Bottom) -->
-    <div style="background: var(--surface); border-top: 1px solid var(--border); padding: var(--space-3) var(--gutter); z-index: 30;">
-      <div style="max-width: var(--max-width); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+    <!-- Timeline & Audio Transport Bar (Pinned to Bottom - Matches Mockup) -->
+    <div class="explorer-transport-bar">
+      <div class="transport-inner">
         
-        <!-- Controls: Play, Prev, Next, Day indicator -->
-        <div style="display: flex; align-items: center; gap: var(--space-3);">
-          <button type="button" class="btn btn-primary" id="btn-transport-play" aria-label="Play October 2026 Ocean Composition">
-            <span aria-hidden="true">▶</span> Play
+        <!-- Left: Large Play Button + Waveform + Track Title -->
+        <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+          <button type="button" class="play-circle-btn" id="btn-transport-play" aria-label="Play October 2026 Ocean Composition">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
           </button>
-          <button type="button" class="btn btn-secondary" id="btn-transport-prev" aria-label="Previous Day (Left Arrow)">
-            ◀
-          </button>
-          <button type="button" class="btn btn-secondary" id="btn-transport-next" aria-label="Next Day (Right Arrow)">
-            ▶
-          </button>
-          <span class="font-mono" style="font-size: var(--t-small); margin-left: var(--space-2);" id="transport-day-text">
-            Oct 01, 2026 (Day 1 of 31)
-          </span>
+
+          <!-- Waveform Visualizer -->
+          <div class="audio-waveform-bars" aria-hidden="true" title="Dynamic Waveform">
+            <div class="wave-bar" style="height: 8px;"></div>
+            <div class="wave-bar" style="height: 14px;"></div>
+            <div class="wave-bar" style="height: 22px;"></div>
+            <div class="wave-bar" style="height: 16px;"></div>
+            <div class="wave-bar" style="height: 24px;"></div>
+            <div class="wave-bar" style="height: 12px;"></div>
+            <div class="wave-bar" style="height: 18px;"></div>
+            <div class="wave-bar" style="height: 26px;"></div>
+            <div class="wave-bar" style="height: 15px;"></div>
+            <div class="wave-bar" style="height: 20px;"></div>
+            <div class="wave-bar" style="height: 10px;"></div>
+            <div class="wave-bar" style="height: 22px;"></div>
+            <div class="wave-bar" style="height: 17px;"></div>
+            <div class="wave-bar" style="height: 12px;"></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text);">Ocean Composition &mdash; October 2026</span>
+            <span class="font-mono text-muted" style="font-size: 0.6875rem;" id="transport-day-text">Oct 01, 2026 (Day 1 of 31)</span>
+          </div>
         </div>
 
-        <!-- 31-Tick Timeline Slider (Mockup Fix #3) -->
-        <div style="flex: 1; max-width: 440px; display: flex; align-items: center; gap: var(--space-3);">
+        <!-- Center: Day Steppers & 31-Tick Scrubber -->
+        <div style="flex: 1; max-width: 420px; display: flex; align-items: center; gap: var(--space-2);">
+          <button type="button" class="btn btn-secondary" id="btn-transport-prev" aria-label="Previous Day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;">
+            &#9664;
+          </button>
           <input type="range" id="timeline-slider" min="1" max="31" value="1" step="1"
                  aria-label="Timeline scrubber, October 1 to 31, 2026"
                  aria-valuetext="October 1, day 1 of 31"
-                 style="width: 100%; cursor: pointer;" />
+                 style="flex: 1; cursor: pointer; accent-color: var(--accent);" />
+          <button type="button" class="btn btn-secondary" id="btn-transport-next" aria-label="Next Day" style="padding: 4px 10px; min-height: 32px; font-size: 0.75rem;">
+            &#9654;
+          </button>
         </div>
 
-        <div style="display: flex; align-items: center; gap: var(--space-4);">
-          <span class="font-mono text-muted" style="font-size: var(--t-small);">0:00 / 4:30</span>
-          <a href="#/lab" class="btn btn-secondary" style="font-size: var(--t-small);">Open in Lab</a>
+        <!-- Right: Time readout & Lab direct link -->
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <span class="font-mono text-muted" style="font-size: var(--t-small);" id="transport-time-code">0:00 / 4:30</span>
+          <a href="#/lab" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 14px; min-height: 36px; white-space: nowrap;">Open in Lab</a>
         </div>
       </div>
     </div>
@@ -171,11 +202,27 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
   if (!viewport) return;
 
   let currentDayIdx = 0; // 0..30
-  let selectedRow = 3;   // 0..7
-  let selectedCol = 4;   // 0..7
+  let selectedRow = 3;   // 0..7 (Row 4 in 1-based UI)
+  let selectedCol = 4;   // 0..7 (Col 5 in 1-based UI)
+
+  // URL hash parameter support (e.g. #/explore?cell=8,8 or #/explore?view=clean)
+  const hash = window.location.hash;
+  const cellMatch = hash.match(/cell=(\d+),(\d+)/);
+  if (cellMatch) {
+    selectedRow = Math.max(0, Math.min(7, parseInt(cellMatch[1], 10) - 1));
+    selectedCol = Math.max(0, Math.min(7, parseInt(cellMatch[2], 10) - 1));
+  }
+  if (hash.includes('view=clean')) {
+    const readoutCard = page.querySelector<HTMLElement>('#cell-readout-card');
+    const readoutToggle = page.querySelector<HTMLButtonElement>('#btn-toggle-readout');
+    if (readoutCard) readoutCard.classList.add('is-collapsed');
+    if (readoutToggle) {
+      readoutToggle.classList.remove('is-active');
+      readoutToggle.setAttribute('aria-pressed', 'false');
+    }
+  }
 
   // 1. Build Accessible Grid Table FIRST (Screen Reader & Keyboard Parity - Flow C)
-  // Ensures full functionality even if WebGL fails or in headless environments
   const gridBody = page.querySelector('#accessible-grid-body');
   if (gridBody) {
     gridBody.innerHTML = '';
@@ -310,10 +357,19 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
       }
     }
 
-    // Update Transport Day text
+    // Update Transport Day text & Time code
     const dayText = page.querySelector('#transport-day-text');
     if (dayText) {
       dayText.textContent = `${day.date} (Day ${day.day_index} of 31)`;
+    }
+
+    const timeCode = page.querySelector('#transport-time-code');
+    if (timeCode) {
+      const totalSeconds = 270; // 4:30
+      const currentSeconds = Math.round(((day.day_index - 1) / 30) * totalSeconds);
+      const m = Math.floor(currentSeconds / 60);
+      const s = currentSeconds % 60;
+      timeCode.textContent = `${m}:${s < 10 ? '0' : ''}${s} / 4:30`;
     }
 
     // Update Slider
@@ -368,6 +424,40 @@ function initExplorerMap(page: HTMLElement, dataset: Grid8Dataset): void {
     const active = coastToggle.classList.toggle('is-active');
     coastToggle.setAttribute('aria-pressed', String(active));
     if (reliefMap) reliefMap.setLayerVisibility('coastlines', active);
+  });
+
+  // Toggle Telemetry Card button
+  const readoutCard = page.querySelector<HTMLElement>('#cell-readout-card');
+  const readoutToggle = page.querySelector<HTMLButtonElement>('#btn-toggle-readout');
+  readoutToggle?.addEventListener('click', () => {
+    const active = readoutToggle.classList.toggle('is-active');
+    readoutToggle.setAttribute('aria-pressed', String(active));
+    if (readoutCard) {
+      readoutCard.classList.toggle('is-collapsed', !active);
+    }
+  });
+
+  // Reset Camera View button
+  const resetBtn = page.querySelector<HTMLButtonElement>('#btn-reset-view');
+  resetBtn?.addEventListener('click', () => {
+    if (reliefMap) {
+      reliefMap.resetView();
+    }
+  });
+
+  // Play button waveform animation toggle
+  const playBtn = page.querySelector<HTMLButtonElement>('#btn-transport-play');
+  const waveBars = page.querySelectorAll<HTMLElement>('.wave-bar');
+  let isPlaying = false;
+  playBtn?.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    playBtn.innerHTML = isPlaying
+      ? `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:0;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:20px;height:20px;margin-left:2px;"><path d="M8 5v14l11-7z"/></svg>`;
+    waveBars.forEach((bar, idx) => {
+      bar.classList.toggle('pulse', isPlaying);
+      bar.style.animationDelay = `${(idx * 0.08).toFixed(2)}s`;
+    });
   });
 
   // Copy cell values handler

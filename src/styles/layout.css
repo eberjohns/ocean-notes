@@ -298,3 +298,366 @@
   }
 }
 
+/* ==========================================================================
+   Explorer Page Styles (Mockup Fidelity)
+   ========================================================================== */
+
+/* Full-viewport application styling for Explorer */
+body.route-explore .site-footer {
+  display: none;
+}
+
+body.route-explore #app {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body.route-explore #main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body.route-explore .explorer-view {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body.route-explore #viewport-wrapper {
+  flex: 1;
+  min-height: 0;
+}
+
+.explorer-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: calc(100vh - var(--header-height));
+  position: relative;
+  background-color: #06131F;
+}
+
+.explorer-hero-header {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--gutter);
+  z-index: 20;
+  max-width: 440px;
+  pointer-events: none;
+}
+
+.explorer-hero-header > * {
+  pointer-events: auto;
+}
+
+.explorer-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: var(--t-small);
+  margin-bottom: var(--space-1);
+  transition: color var(--dur-fast);
+}
+
+.explorer-back-link:hover {
+  color: var(--accent);
+}
+
+.explorer-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.explorer-hero-subhead {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: rgba(107, 225, 208, 0.85);
+  margin-bottom: var(--space-2);
+  letter-spacing: 0.04em;
+}
+
+.explorer-hero-desc {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-3) 0;
+  text-shadow: 0 2px 8px rgba(6, 19, 31, 0.8);
+}
+
+/* Floating Action Toolbar on Right (Mockup Match) */
+.explorer-floating-tools {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--gutter);
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tool-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: rgba(6, 21, 34, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 225, 208, 0.25);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  padding: 0;
+}
+
+.tool-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tool-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(6, 21, 34, 0.9);
+  box-shadow: 0 0 12px rgba(107, 225, 208, 0.3);
+}
+
+.tool-btn.is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(107, 225, 208, 0.15);
+}
+
+/* Selected Cell Readout Card */
+.readout-card {
+  background: rgba(6, 21, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(107, 225, 208, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transition: opacity var(--dur-normal), transform var(--dur-normal);
+  max-width: 320px;
+  width: 100%;
+}
+
+.readout-card.is-collapsed {
+  display: none;
+}
+
+/* Audio Transport Bar at Bottom */
+.explorer-transport-bar {
+  background: rgba(6, 19, 31, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(107, 225, 208, 0.15);
+  padding: var(--space-3) var(--gutter);
+  z-index: 30;
+}
+
+.transport-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Large Round Play Button */
+.play-circle-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(107, 225, 208, 0.1);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  box-shadow: 0 0 14px rgba(107, 225, 208, 0.25);
+  flex-shrink: 0;
+}
+
+.play-circle-btn:hover {
+  background: var(--accent);
+  color: #06131F;
+  box-shadow: 0 0 22px rgba(107, 225, 208, 0.55);
+  transform: scale(1.04);
+}
+
+.play-circle-btn svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+}
+
+/* Waveform Visualizer Bars */
+.audio-waveform-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+  padding: 0 4px;
+}
+
+.wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  background-color: var(--accent);
+  opacity: 0.65;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+.wave-bar.pulse {
+  animation: waveBarPulse 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes waveBarPulse {
+  0% { transform: scaleY(0.4); opacity: 0.4; }
+  100% { transform: scaleY(1.0); opacity: 0.95; }
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .brand {
+    font-size: 1.1rem;
+    gap: var(--space-2);
+  }
+
+  .brand-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .site-nav {
+    display: none; /* Mobile navigation uses direct header links & pill */
+  }
+
+  .sound-banner {
+    padding: 6px var(--space-3);
+    font-size: 0.75rem;
+    gap: var(--space-2);
+  }
+
+  .sound-banner-actions .btn {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    min-height: 28px;
+  }
+
+  /* Explorer Hero Header on Mobile */
+  .explorer-hero-header {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    max-width: calc(100% - 64px);
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .explorer-back-link,
+  .explorer-hero-desc {
+    display: none;
+  }
+
+  .explorer-hero-title {
+    font-size: 1.5rem;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(6, 19, 31, 0.9);
+  }
+
+  .explorer-hero-subhead {
+    font-size: 0.6875rem;
+    margin: 2px 0 0 0;
+    text-shadow: 0 1px 4px rgba(6, 19, 31, 0.9);
+  }
+
+  /* Live caption hidden on mobile header to avoid overlap */
+  #live-caption {
+    display: none;
+  }
+
+  /* Floating tools on mobile */
+  .explorer-floating-tools {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+    z-index: 25;
+  }
+
+  .tool-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .tool-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Readout Card as mobile drawer overlay */
+  .readout-card {
+    position: absolute;
+    bottom: 96px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    width: auto;
+    z-index: 35;
+    padding: var(--space-3);
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+
+  /* Transport bar on mobile */
+  .explorer-transport-bar {
+    padding: 8px 12px;
+  }
+
+  .transport-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .play-circle-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .play-circle-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .audio-waveform-bars {
+    height: 20px;
+    gap: 2px;
+  }
+
+  .wave-bar {
+    width: 2px;
+  }
+}
+

@@ -58,10 +58,14 @@ export class Router {
 
   private handleNavigation(): void {
     const rawHash = window.location.hash.slice(1);
-    const path = rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
-    const route = routes[path] || routes['/'];
+    const fullPath = rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
+    const cleanPath = fullPath.split('?')[0];
+    const route = routes[cleanPath] || routes['/'];
 
-    store.setRoute(path in routes ? path : '/');
+    store.setRoute(cleanPath in routes ? cleanPath : '/');
+
+    // Update body route class for full-viewport app styling
+    document.body.className = `route-${cleanPath.replace('/', '') || 'home'}`;
 
     // Update document title
     document.title = route.title;
