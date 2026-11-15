@@ -33,8 +33,11 @@ def main():
     os.makedirs('build', exist_ok=True)
 
     # 1. Optimize Color Relief Texture (2048 px wide)
+    # The source GEBCO arrays start at -10°S (index 0) and end at +10°N.
+    # In standard cartographic display, North is top. Flipping vertically aligns
+    # Row 0 with North (+10°N), matching Three.js UV (v=1 at top), coastlines, and OSCAR currents.
     color_src = 'data/bathymetry-color.webp'
-    color_img = Image.open(color_src)
+    color_img = Image.open(color_src).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
     orig_w, orig_h = color_img.size
     target_w = 2048
     target_h = int(round(target_w * (orig_h / orig_w))) # 1365 px
@@ -48,7 +51,7 @@ def main():
 
     # 2. Optimize Height Texture (1024 px wide, 8-bit PNG)
     height_src = 'data/bathymetry-height.png'
-    height_img = Image.open(height_src)
+    height_img = Image.open(height_src).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
     h_w = 1024
     h_h = int(round(h_w * (orig_h / orig_w))) # 683 px
 
@@ -65,7 +68,11 @@ def main():
 
     # 3. Optimize Normal Map Texture (1024 px wide WebP)
     normal_src = 'data/bathymetry-normal.png'
-    normal_img = Image.open(normal_src)
+    normal_img = Image.open(normal_src).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    # Invert green channel for tangent space normal map after vertical flip
+    normal_arr = np.array(normal_img)
+    normal_arr[:, :, 1] = 255 - normal_arr[:, :, 1]
+    normal_img = Image.fromarray(normal_arr)
     print(f"Downsampling normal map: ({orig_w}x{orig_h}) -> ({h_w}x{h_h})...")
     normal_resized = normal_img.resize((h_w, h_h), Image.Resampling.BILINEAR)
     normal_out = 'public/data/normal-1024.webp'
@@ -134,3 +141,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
